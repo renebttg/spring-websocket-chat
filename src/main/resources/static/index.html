@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrar no Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2f;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: #2e2e3e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #4caf50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Bem-vindo ao Chat</h2>
+    <input type="text" id="username" placeholder="Digite seu nome..." />
+    <br />
+    <button onclick="enterChat()">Entrar no Chat</button>
+</div>
+
+<script>
+    function enterChat() {
+        const username = document.getElementById('username').value.trim();
+        if (username) {
+            localStorage.setItem('username', username);
+            window.location.href = 'chat.html';
+        } else {
+            alert("Por favor, digite um nome de usuário.");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat em Tempo Real</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: white;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #2e2e3e;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    #chatArea {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #3e3e50;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #57576d;
+      border-radius: 5px;
+      max-width: 60%;
+    }
+
+    .message.self {
+      background: #4caf50;
+      margin-left: auto;
+    }
+
+    footer {
+      display: flex;
+      padding: 15px;
+      background: #2e2e3e;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #2196f3;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1976d2;
+    }
+  </style>
+</head>
+<body>
+<header>
+  Bem-vindo, <span id="userDisplay"></span>!
+</header>
+<div id="chatArea"></div>
+<footer>
+  <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
+  <button onclick="sendMessage()">Enviar</button>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+  let stompClient = null;
+  const username = localStorage.getItem('username');
+  document.getElementById('userDisplay').textContent = username;
+
+  function connect() {
+    const socket = new SockJS('/ws-chat');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, () => {
+      stompClient.subscribe('/topic/public', (message) => {
+        const msg = JSON.parse(message.body);
+        const div = document.createElement('div');
+        div.classList.add('message');
+        if (msg.sender === username) {
+          div.classList.add('self');
+        }
+        div.textContent = msg.sender + ": " + msg.content;  // Exibe "Rene: Olá"
+        document.getElementById('chatArea').appendChild(div);
+        document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+      });
+
+      stompClient.send("/app/chat.newUser", {}, JSON.stringify({
+        sender: username,
+        type: 'JOIN'
+      }));
+    });
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+
+    if (content && stompClient) {
+      stompClient.send("/app/chat.send", {}, JSON.stringify({
+        sender: username,
+        content: content,
+        type: 'CHAT'
+      }));
+      input.value = '';
+    }
+  }
+
+  connect();
+</script>
+</body>
+</html>
