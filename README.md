@@ -12,9 +12,9 @@ Este projeto é um **chat em tempo real** desenvolvido com **Spring Boot**, util
 
 ## 📸 Demonstração
 
-<img src="docs/chat-demo.gif" alt="Chat Demo" width="700"/>
+**___ESPAÇO PRA GIF FUTURO AQUI___**
 
-> A interface está localizada em `src/main/resources/static/index.html`.
+A interface está localizada em `src/main/resources/static/index.html` e `***/static/chat.html`.
 
 ## 🧰 Tecnologias Utilizadas
 
